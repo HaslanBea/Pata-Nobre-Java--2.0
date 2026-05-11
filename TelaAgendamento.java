@@ -1,8 +1,14 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import javax.swing.*;
 
 public class TelaAgendamento extends JFrame {
 
+    JTextField txtData;
+    JTextField txtServico;
+
     public TelaAgendamento() {
+
         setTitle("Agendamento");
         setSize(300, 220);
         setLayout(null);
@@ -11,7 +17,7 @@ public class TelaAgendamento extends JFrame {
         lblData.setBounds(10, 10, 100, 20);
         add(lblData);
 
-        JTextField txtData = new JTextField();
+        txtData = new JTextField();
         txtData.setBounds(100, 10, 150, 20);
         add(txtData);
 
@@ -19,7 +25,7 @@ public class TelaAgendamento extends JFrame {
         lblServico.setBounds(10, 40, 100, 20);
         add(lblServico);
 
-        JTextField txtServico = new JTextField();
+        txtServico = new JTextField();
         txtServico.setBounds(100, 40, 150, 20);
         add(txtServico);
 
@@ -28,7 +34,32 @@ public class TelaAgendamento extends JFrame {
         add(agendar);
 
         agendar.addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "Agendamento realizado!");
+
+            try {
+
+                Connection conn = Conexao.conectar();
+
+                String sql = "INSERT INTO agendamento(data_agendamento, servico) VALUES (?, ?)";
+
+                PreparedStatement stmt = conn.prepareStatement(sql);
+
+                stmt.setString(1, txtData.getText());
+                stmt.setString(2, txtServico.getText());
+
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(null, "Agendamento realizado!");
+
+                txtData.setText("");
+                txtServico.setText("");
+
+            } catch (Exception erro) {
+
+                JOptionPane.showMessageDialog(null, "Erro no agendamento");
+                System.out.println(erro);
+
+            }
+
         });
     }
 }
